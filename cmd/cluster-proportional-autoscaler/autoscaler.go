@@ -19,10 +19,12 @@ package main
 import (
 	"fmt"
 	"os"
+	"strings"
 
 	"k8s.io/component-base/cli/flag"
 
 	"github.com/kubernetes-sigs/cluster-proportional-autoscaler/cmd/cluster-proportional-autoscaler/options"
+	"github.com/kubernetes-sigs/cluster-proportional-autoscaler/cmd/cluster-proportional-autoscaler/usage"
 	"github.com/kubernetes-sigs/cluster-proportional-autoscaler/pkg/autoscaler"
 	"github.com/kubernetes-sigs/cluster-proportional-autoscaler/pkg/version"
 
@@ -38,6 +40,20 @@ func main() {
 	if config.PrintVer {
 		fmt.Printf("%s\n", version.VERSION)
 		os.Exit(0)
+	}
+
+	if config.ShowSupportedModes {
+		modes := usage.GetSupportedModes()
+		fmt.Printf("Supported modes: %s\n", strings.Join(modes, ", "))
+		os.Exit(0)
+	}
+
+	if config.ShowModeUsage != ""{
+		if err := config.ValidateUsageFlag(); err != nil {
+			glog.Errorf("%v", err)
+			os.Exit(1)
+		}
+		usage := usage.ShowModeUsage(config.ShowModeUsage)
 	}
 
 	// Perform further validation of flags.

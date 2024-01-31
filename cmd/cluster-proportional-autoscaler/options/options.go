@@ -29,14 +29,16 @@ import (
 
 // AutoScalerConfig configures and runs an autoscaler server
 type AutoScalerConfig struct {
-	Target            string
-	ConfigMap         string
-	Namespace         string
-	DefaultParams     configMapData
-	PollPeriodSeconds int
-	PrintVer          bool
-	NodeLabels        string
-	MaxSyncFailures   int
+	ModeUsage string
+	ShowSupportedModes bool
+	Target             string
+	ConfigMap          string
+	Namespace          string
+	DefaultParams      configMapData
+	PollPeriodSeconds  int
+	PrintVer           bool
+	NodeLabels         string
+	MaxSyncFailures    int
 }
 
 // NewAutoScalerConfig returns a Autoscaler config
@@ -117,6 +119,8 @@ func (c *configMapData) Type() string {
 
 // AddFlags adds flags for a specific AutoScaler to the specified FlagSet
 func (c *AutoScalerConfig) AddFlags(fs *pflag.FlagSet) {
+	fs.BoolVar(&c.ShowSupportedModes, "show-modes", c.ShowSupportedModes, "The available modes that can be used for autoscaling. Use --show-mode <MODE> to show information on that mode.")
+	fs.StringVar(&c.ModeUsage, "show-mode", c.ModeUsage, "The mode for which you want to disply the usage. Use --show-modes to list the available modes.")
 	fs.StringVar(&c.Target, "target", c.Target, "Target to scale. In format: deployment/*, replicationcontroller/* or replicaset/* (not case sensitive).")
 	fs.StringVar(&c.ConfigMap, "configmap", c.ConfigMap, "ConfigMap containing our scaling parameters.")
 	fs.StringVar(&c.Namespace, "namespace", c.Namespace, "Namespace for all operations, fallback to the namespace of this autoscaler(through MY_POD_NAMESPACE env) if not specified.")
