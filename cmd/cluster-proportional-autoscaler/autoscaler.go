@@ -48,12 +48,13 @@ func main() {
 		os.Exit(0)
 	}
 
-	if config.ShowModeUsage != ""{
-		if err := config.ValidateUsageFlag(); err != nil {
+	if config.ModeUsage != ""{
+		if err := usage.ValidateUsageFlag(config.ModeUsage); err != nil {
 			glog.Errorf("%v", err)
 			os.Exit(1)
 		}
-		usage := usage.ShowModeUsage(config.ShowModeUsage)
+		usage.ShowModeUsage(config.ModeUsage)
+		os.Exit(0)
 	}
 
 	// Perform further validation of flags.
